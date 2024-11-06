@@ -1,0 +1,37 @@
+# Copyright (2024) Beijing Volcano Engine Technology Ltd.
+cluster:
+  ak: ""
+  sk: ""
+  region: ""
+  volcHost: "open.volcengineapi.com"
+
+deploy:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 500Mi
+  image:
+    registry: open-registry-cn-beijing.cr.volces.com/vke
+    name: volcengine-vci-admission
+    tag: v1.1.0-public
+  affinity: {}
+  containerSettings:
+    healthProbePort: 9444
+    metricsPort: 9090
+    certDir: "/app/deploy/certs/webhook"
+    webhookPort: 9443
+    webhookName: "volcengine-vci-admission"
+    secretNamespace: "kube-system"
+    secretName: "volcengine-vci-admission-certs"
+  authenticationMode: "inCluster"
+  serviceAccountName: ""
+
+service:
+  type: ClusterIP
+  metricsPort: 9090
+  port: 9443
+

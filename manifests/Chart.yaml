@@ -1,0 +1,7 @@
+# Copyright (2024) Beijing Volcano Engine Technology Ltd.
+apiVersion: v2
+name: volcengine-vci-admission
+description: volcengine vci admission
+type: application
+appVersion: v1.1.0
+version: v1.1.0

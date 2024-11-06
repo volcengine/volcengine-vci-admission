@@ -1,0 +1,106 @@
+# Copyright (2024) Beijing Volcano Engine Technology Ltd.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "common.names.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  replicas: {{ default "1" .Values.deploy.replicas }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+    spec:
+      {{- if .Values.deploy.affinity }}
+      affinity: {{ toYaml .Values.deploy.affinity | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  component: {{ template "common.names.fullname" . }}
+              topologyKey: kubernetes.io/hostname
+      {{- end }}
+      {{- if eq .Values.deploy.authenticationMode "inCluster" }}
+      automountServiceAccountToken: true
+      serviceAccountName: {{ template "common.auth.serviceAccountName" . }}
+      {{- end }}
+      containers:
+        - command:
+            - /app/volcengine-vci-admission
+            - --metrics-bind-address={{ printf ":%d" (int .Values.deploy.containerSettings.metricsPort) }}
+            - --health-probe-bind-address={{ printf ":%d" (int .Values.deploy.containerSettings.healthProbePort) }}
+            - --webhook-config=/etc/config/config.json
+          {{- if eq .Values.deploy.authenticationMode "useKubeconfig" }}
+            - --kubeconfig=/etc/kubernetes/kubeconfig/volcengine-vci-admission.conf
+          {{- end }}
+            - --leader-elect=true
+            - --leader-elect-resource-name={{ template "common.names.fullname" . }}
+            - --leader-elect-resource-namespace={{ .Release.Namespace }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: INSTANCE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+          image: "{{ .Values.deploy.image.registry }}/{{ .Values.deploy.image.name }}:{{ .Values.deploy.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: https-healthz
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 3
+          name: vci-admission
+          ports:
+            - containerPort: {{ .Values.deploy.containerSettings.webhookPort }}
+              name: http
+              protocol: TCP
+            - containerPort: {{ .Values.deploy.containerSettings.healthProbePort }}
+              name: https-healthz
+              protocol: TCP
+            - containerPort: {{ .Values.deploy.containerSettings.metricsPort }}
+              name: https-metric
+              protocol: TCP
+          resources: {{- toYaml .Values.deploy.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /etc/config
+              name: webhook-config
+            {{- if eq .Values.deploy.authenticationMode "useKubeconfig" }}
+            - mountPath: /etc/kubernetes/kubeconfig/
+              name: cluster-config
+            {{- end }}
+      dnsPolicy: ClusterFirst
+      volumes:
+        - secret:
+            defaultMode: 420
+            secretName: {{ template "common.names.fullname" . }}-config
+          name: webhook-config
+        {{- if eq .Values.deploy.authenticationMode "useKubeconfig" }}
+        - configMap:
+            defaultMode: 420
+            name: {{ template "common.names.fullname" . }}-cluster-config
+          name: cluster-config
+        {{- end }}

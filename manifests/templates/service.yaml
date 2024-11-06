@@ -1,0 +1,19 @@
+# Copyright (2024) Beijing Volcano Engine Technology Ltd.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "common.names.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "common.labels.standard" . | nindent 4}}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: https-metric
+      port: {{ .Values.service.metricsPort }}
+      protocol: TCP
+      targetPort: https-metric
+    - name: http
+      port: {{ .Values.service.port }}
+      protocol: TCP
+      targetPort: http
+  selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
