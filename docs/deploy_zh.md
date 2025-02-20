@@ -27,7 +27,7 @@ IAM 鉴权的更多信息见 [IAM](https://www.volcengine.com/docs/6257/0)。
 本仓库中提供了组件安装的 [Charts 目录](../manifests)。`volcengine-vci-admission` 以 Deployment 形式部署，
 并通过 inClusterConfig 或者指定 kubeconfig 的方式访问 Kubernetes 集群。 因此，将本仓库克隆到本地后，可以通过以下两种方式部署组件：
 
-### 1.组件通过 inClusterConfig 的方式访问集群
+### 1. 组件通过 inClusterConfig 的方式访问集群
 执行以下命令，会自动创建组件相关的资源，包括组件访问集群的 `ServiceAccount`, `ClusterRole`, `ClusterRoleBinding` 等资源。
 ```
 helm install volcengine-vci-admission {{CHART_FOLDER}}/manifests -n {{NAMESPACE}} \
@@ -37,7 +37,7 @@ helm install volcengine-vci-admission {{CHART_FOLDER}}/manifests -n {{NAMESPACE}
 ```
 其中 `{{CHART_FOLDER}}` 为 Charts 所在目录，`{{NAMESPACE}}` 期望组件部署的命名空间。
 
-### 2.组件通过指定 kubeconfig 的方式访问集群
+### 2. 组件通过指定 kubeconfig 的方式访问集群
 如果想要指定 `volcengine-vci-admission` 访问集群的凭证，确保该凭证拥有 [rbac.yaml](../manifests/templates/rbac.yaml) 中定义的权限。
 以下步骤展示了如何生成一个凭证，并在部署 `volcengine-vci-admission` 时使用该凭证。
 

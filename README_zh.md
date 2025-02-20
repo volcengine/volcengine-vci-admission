@@ -16,14 +16,16 @@ vci-admission 将对配置了 Label `vke.volcengine.com/burst-to-vci: enforce` �
 
 ## Feature
 `volcengine-vci-admission` 支持 Pod 添加以下 Annotation, Label:
+
 ### Label
 | Key                             |     Value     | 说明                                                        |
 |---------------------------------|:-------------:|-----------------------------------------------------------|
 | vke.volcengine.com/burst-to-vci |    enforce    | 是否将 Pod 强制部署到 VCI 上。取值如下：enforce，表明创建 Pod 时将其强制部署到 VCI 上。 |
+
 ### Annotation
 | Key         |     Value     | 说明                                                            |
 |-------------|:-------------:|---------------------------------------------------------------|
 | vke.volcengine.com/preferred-subnet-ids |    subnet-3tispp1nai****    | 设置 VCI 实例子网。说明：<br>支持指定多个子网，但多个子网必须属于同一个可用区。多子网之间使用半角逗号（,）隔开。 |
 
 ## Deploy
-参考[部署指南](docs/deploy_zh.md)
+参考 [部署指南](docs/deploy_zh.md)

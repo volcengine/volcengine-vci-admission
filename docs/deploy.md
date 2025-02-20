@@ -25,7 +25,7 @@ This repository provides the [Charts directory](../manifests) for installation.
 `volcengine-vci-admission` is deployed as Deployment and accesses the Kubernetes cluster through inClusterConfig or specified kubeconfig. 
 Therefore, you can deploy the component in the following two ways:
 
-### 1.Access the cluster with inClusterConfig
+### 1. Access the cluster with inClusterConfig
 The following command will create the resources for the component, including the `ServiceAccount`, `ClusterRole` and `ClusterRoleBinding`.
 ```
 helm install volcengine-vci-admission {{CHART_FOLDER}}/manifests -n {{NAMESPACE}} \
@@ -35,7 +35,7 @@ helm install volcengine-vci-admission {{CHART_FOLDER}}/manifests -n {{NAMESPACE}
 ```
 Here, `{{CHART_FOLDER}}` is the directory where the Charts are located, and `{{NAMESPACE}}` is the namespace where you want to deploy the component.
 
-### 2.Access the cluster with specified kubeconfig
+### 2. Access the cluster with specified kubeconfig
 To specify the credentials for `volcengine-vci-admission` to access the cluster, ensure that the credentials have the permissions defined in [rbac.yaml](../manifests/templates/rbac.yaml). 
 The following steps demonstrate how to generate a credential and use it.
 1. Create rbac. See [rbac.yaml](../manifests/templates/rbac.yaml) for details.

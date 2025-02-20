@@ -15,14 +15,16 @@ See [Using VCI in Self-built Clusters](https://www.volcengine.com/docs/6460/1159
 
 ## Feature
 vci-admission supports appending the following Annotations and Labels to Pod:
+
 ### Label
 | Key                             |     Value     | Description                                                                                                            |
 |---------------------------------|:-------------:|---------------------------------------------------------------------------------------------------------------|
 | vke.volcengine.com/burst-to-vci |    enforce    | Whether to deploy the Pod to the VCI. Values: enforce, indicating that the pod is deployed to the VCI. |
+
 ### Annotation
 | Key         |     Value     | Description                                                                               |
 |-------------|:-------------:|----------------------------------------------------------------------------------|
 | vke.volcengine.com/preferred-subnet-ids |    subnet-3tispp1nai****    | Set the subnet used by the Pod.Note:<br>Supports specifying multiple subnets, but all subnets must belong to the same availability zone. Use commas (,) to separate multiple subnets. |
 
-## Deploy
-See the [Deployment Guide](docs/deploy_zh.md)
+## How to deploy
+See the [Deployment Guide](docs/deploy.md)
