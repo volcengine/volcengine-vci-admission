@@ -28,3 +28,7 @@ vci-admission supports appending the following Annotations and Labels to Pod:
 
 ## How to deploy
 See the [Deployment Guide](docs/deploy.md)
+
+## Security and privacy
+This project takes security seriously.
+For vulnerability reporting and supported versions, see [SECURITY.md](SECURITY.md)
